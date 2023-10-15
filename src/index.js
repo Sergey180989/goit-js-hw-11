@@ -5,7 +5,7 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 
 
 import PXService from './app';
-// import createMarkUp from './Markup';
+
 const key = '39970397-b319560db17234a71cde66e6b';
 
 const refs = {
