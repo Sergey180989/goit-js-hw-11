@@ -11,21 +11,19 @@ export default class PXService {
         this.totalHits = 0;
     }
 
-    fetchImages() {
+    async fetchImages() {
         console.log('до запроса: ', this);
         const URL = `${BaseURL}?key=${key}&q=${this.search}&per_page=${this.per_page}&page=${this.page}`;
 
-        return axios.get(URL)
-            .then(response => {
-                this.incrementPage();
-                 
-                this.totalHits = response.data.totalHits;
-                return response.data.hits;
-            })
-            .catch(error => {
-                console.error(error);
-                throw error;
-            });
+        try {
+            const response = await axios.get(URL);
+            this.incrementPage();
+            this.totalHits = response.data.totalHits;
+            return response.data.hits;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
 
     incrementPage() {

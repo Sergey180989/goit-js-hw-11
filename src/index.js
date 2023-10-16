@@ -54,7 +54,7 @@ function createMarkUp(hits) {
     .join('');
 }
 
-function onSearch(e) {
+async function onSearch(e) {
   e.preventDefault();
   clearhitsMarkup();
   pxService.searchQuery = e.currentTarget.elements.searchQuery.value.trim();
@@ -67,21 +67,30 @@ function onSearch(e) {
   } else {
     refs.loadMoreBtn.style.display = 'none';
     pxService.resetPage();
-    pxService.fetchImages().then((hits) => {
-        appendhitsMarkup(hits);
-        if (pxService.totalHits > 0) {
-          Notify.info(`Hooray! We found ${pxService.totalHits} images.`);
-        } else {
-          Notify.failure("Sorry, there are no images matching your search query. Please try again.");
-        }
-      });
+    try {
+      const hits = await pxService.fetchImages();
+      appendhitsMarkup(hits);
+      if (pxService.totalHits > 0) {
+        Notify.info(`Hooray! We found ${pxService.totalHits} images.`);
+      } else {
+        Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+      }
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
   }
 }
 
 
 
-function onLoadMore() {
-  pxService.fetchImages().then(appendhitsMarkup);
+
+async function onLoadMore() {
+  try {
+    const hits = await pxService.fetchImages();
+    appendhitsMarkup(hits);
+  } catch (error) {
+    console.error('Error fetching images:', error);
+  }
 }
 
 function appendhitsMarkup(hits) {
